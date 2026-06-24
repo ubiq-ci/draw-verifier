@@ -1,0 +1,26 @@
+{
+  "name": "@ubiq-ci/draw-verifier",
+  "version": "0.1.0",
+  "description": "Independent verifier for signed lottery draw ledgers.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "draw-verifier": "./dist/src/cli.js"
+  },
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "files": [
+    "dist/src"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "tsc && node --test dist/test/*.test.js"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "5.6.3"
+  }
+}
