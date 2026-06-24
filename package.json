@@ -8,10 +8,10 @@
     "access": "public"
   },
   "bin": {
-    "draw-verifier": "./dist/src/cli.js"
+    "draw-verifier": "dist/src/cli.js"
   },
-  "main": "./dist/src/index.js",
-  "types": "./dist/src/index.d.ts",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "files": [
     "dist/src"
   ],
