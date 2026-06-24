@@ -4,6 +4,9 @@
   "description": "Independent verifier for signed lottery draw ledgers.",
   "type": "module",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "draw-verifier": "./dist/src/cli.js"
   },
@@ -18,7 +21,8 @@
   "scripts": {
     "build": "tsc",
     "build:web": "tsc && esbuild dist/src/index.js --bundle --format=esm --outfile=web/draw-verifier.js",
-    "test": "tsc && node --test dist/test/*.test.js"
+    "test": "tsc && node --test dist/test/*.test.js",
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
