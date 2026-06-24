@@ -39,6 +39,17 @@ const result = await verifyLedger(entries, keys);
 if (!result.ok) console.error(result.errors);
 ```
 
+## Verify in the browser
+
+```
+npm run build:web
+```
+
+This bundles the verifier into `web/draw-verifier.js`. Serve the `web/` folder on
+any static host (or locally, for example `npx serve web`) and open the page. It
+verifies a pasted or uploaded ledger entirely in the browser, with nothing sent
+to a server.
+
 ## Published format
 
 Each entry:

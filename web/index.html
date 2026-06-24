@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Draw Verifier</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: system-ui, sans-serif; max-width: 920px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+  h1 { margin-bottom: 0.25rem; }
+  p.lead { color: #666; margin-top: 0; }
+  .grid { display: grid; gap: 1rem; grid-template-columns: 1fr 1fr; }
+  @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+  label { font-weight: 600; display: block; margin-bottom: 0.25rem; }
+  input[type=file] { display: block; margin-bottom: 0.5rem; }
+  textarea { width: 100%; height: 180px; font-family: ui-monospace, monospace; font-size: 12px; box-sizing: border-box; }
+  button { font-size: 1rem; padding: 0.6rem 1.2rem; margin-top: 1rem; cursor: pointer; }
+  #result { margin-top: 1.5rem; padding: 1rem; border-radius: 6px; display: none; }
+  #result.pass { background: #e6f4ea; border: 1px solid #34a853; }
+  #result.fail { background: #fce8e6; border: 1px solid #ea4335; }
+  #result h2 { margin: 0 0 0.5rem; }
+  ul.errors { margin: 0; padding-left: 1.2rem; font-family: ui-monospace, monospace; font-size: 13px; }
+  .note { color: #666; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+  <h1>Draw Verifier</h1>
+  <p class="lead">Independently verify a published draw ledger: signatures, hashes and the chain. Everything runs in your browser; nothing is uploaded.</p>
+
+  <div class="grid">
+    <div>
+      <label for="ledger">Ledger (one JSON entry per line)</label>
+      <input type="file" id="ledgerFile" accept=".jsonl,.json,.txt" />
+      <textarea id="ledger" placeholder='{"record":{...},"entryHash":"...","keyId":"...","signature":"..."}'></textarea>
+    </div>
+    <div>
+      <label for="keys">Public keys (JSON: key id to base64 SPKI)</label>
+      <input type="file" id="keysFile" accept=".json,.txt" />
+      <textarea id="keys" placeholder='{"ec256-...":"MFkw..."}'></textarea>
+    </div>
+  </div>
+
+  <button id="verify">Verify</button>
+
+  <div id="result"></div>
+
+  <p class="note">Open source. Source and CLI are in the project repository.</p>
+
+  <script type="module">
+    import { verifyLedger } from './draw-verifier.js';
+
+    const byId = (id) => document.getElementById(id);
+
+    function wireFile(fileId, textId) {
+      byId(fileId).addEventListener('change', async (e) => {
+        const f = e.target.files[0];
+        if (f) byId(textId).value = await f.text();
+      });
+    }
+    wireFile('ledgerFile', 'ledger');
+    wireFile('keysFile', 'keys');
+
+    function parseLedger(text) {
+      const t = text.trim();
+      if (t.startsWith('[')) return JSON.parse(t);
+      return t.split('\n').map((l) => l.trim()).filter(Boolean).map((l) => JSON.parse(l));
+    }
+
+    function escapeHtml(s) {
+      return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+    }
+
+    byId('verify').addEventListener('click', async () => {
+      const box = byId('result');
+      box.style.display = 'block';
+      try {
+        const entries = parseLedger(byId('ledger').value);
+        const keys = JSON.parse(byId('keys').value);
+        const r = await verifyLedger(entries, keys);
+        if (r.ok) {
+          box.className = 'pass';
+          box.innerHTML = '<h2>PASS</h2><p>' + r.count + ' entries verified: signatures, hashes and chain.</p>';
+        } else {
+          box.className = 'fail';
+          box.innerHTML = '<h2>FAIL</h2><p>' + r.errors.length + ' problem(s):</p><ul class="errors">'
+            + r.errors.map((e) => '<li>' + escapeHtml(e) + '</li>').join('') + '</ul>';
+        }
+      } catch (err) {
+        box.className = 'fail';
+        box.innerHTML = '<h2>Error</h2><p>' + escapeHtml(String((err && err.message) || err)) + '</p>';
+      }
+    });
+  </script>
+</body>
+</html>
