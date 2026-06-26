@@ -56,12 +56,16 @@ Each entry:
 
 ```json
 {
-  "record": { "version": "1.0", "seqNo": 0, "drawId": "...", "gameSpec": { }, "result": { }, "timestamp": "...", "nonce": "...", "prevHash": "sha256:..." },
+  "record": { "version": "2.0", "seqNo": 0, "drawId": "...", "eventId": "...", "drawName": "...", "scheduledAt": "...", "closingDate": "...", "gameSpec": { }, "result": { }, "generatedAt": "...", "nonce": "...", "prevHash": "sha256:..." },
   "entryHash": "sha256:...",
   "keyId": "...",
   "signature": "<base64 DER ECDSA>"
 }
 ```
+
+`drawId` identifies the draw; `eventId`, `drawName`, `scheduledAt` (the scheduled
+draw time) and `closingDate` (the betting cutoff) describe the event, so a signed
+entry is self-describing. `generatedAt` is when the entry was produced.
 
 The record is canonicalized with the JSON Canonicalization Scheme (RFC 8785)
 before hashing and signing; the verifier recomputes that canonical form itself,
