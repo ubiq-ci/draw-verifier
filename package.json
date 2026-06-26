@@ -1,6 +1,6 @@
 {
   "name": "@ubiq-ci/draw-verifier",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Independent verifier for signed lottery draw ledgers.",
   "type": "module",
   "license": "MIT",

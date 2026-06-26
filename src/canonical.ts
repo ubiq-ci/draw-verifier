@@ -48,6 +48,7 @@ export function canonicalize(r: DrawRecord): string {
     + key('nonce') + str(r.nonce) + ','
     + key('prevHash') + str(r.prevHash) + ','
     + key('result') + result(r.result) + ','
+    + key('scheduledAt') + str(r.scheduledAt) + ','
     + key('seqNo') + int(r.seqNo) + ','
     + key('version') + str(r.version)
     + '}';
