@@ -21,9 +21,13 @@ export interface DrawRecord {
   version: string;
   seqNo: number;
   drawId: string;
+  eventId: string;
+  drawName: string;
+  scheduledAt: string;
+  closingDate: string;
   gameSpec: GameSpec;
   result: Record<string, number[]>;
-  timestamp: string;
+  generatedAt: string;
   nonce: string;
   prevHash: string;
 }
@@ -35,13 +39,16 @@ export interface DrawRecord {
  */
 export function canonicalize(r: DrawRecord): string {
   return '{'
+    + key('closingDate') + str(r.closingDate) + ','
     + key('drawId') + str(r.drawId) + ','
+    + key('drawName') + str(r.drawName) + ','
+    + key('eventId') + str(r.eventId) + ','
     + key('gameSpec') + gameSpec(r.gameSpec) + ','
+    + key('generatedAt') + str(r.generatedAt) + ','
     + key('nonce') + str(r.nonce) + ','
     + key('prevHash') + str(r.prevHash) + ','
     + key('result') + result(r.result) + ','
     + key('seqNo') + int(r.seqNo) + ','
-    + key('timestamp') + str(r.timestamp) + ','
     + key('version') + str(r.version)
     + '}';
 }

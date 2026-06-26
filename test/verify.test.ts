@@ -6,9 +6,13 @@ import { verifyLedger, type SignedEntry, type PublicKeys } from '../src/verify.j
 
 test('canonical encoding matches the engine golden vector', () => {
   const record: DrawRecord = {
-    version: '1.0',
+    version: '2.0',
     seqNo: 0,
     drawId: 'draw-1',
+    eventId: 'evt-1',
+    drawName: 'Evening draw',
+    scheduledAt: '2026-01-01T20:00:00Z',
+    closingDate: '2026-01-01T19:45:00Z',
     gameSpec: {
       gameId: 'g1',
       draws: [
@@ -18,11 +22,11 @@ test('canonical encoding matches the engine golden vector', () => {
       distinctAcross: [['winning', 'machine']],
     },
     result: { winning: [1, 2, 3, 4, 5], machine: [6, 7, 8, 9, 10] },
-    timestamp: '2026-01-01T00:00:00Z',
+    generatedAt: '2026-01-01T00:00:00Z',
     nonce: 'nonce123',
     prevHash: 'sha256:abc',
   };
-  const expected = '{"drawId":"draw-1","gameSpec":{"distinctAcross":[["winning","machine"]],"draws":[{"count":5,"label":"winning","ordered":false,"pool":{"max":90,"min":1},"withReplacement":false},{"count":5,"label":"machine","ordered":false,"pool":{"max":90,"min":1},"withReplacement":false}],"gameId":"g1"},"nonce":"nonce123","prevHash":"sha256:abc","result":{"machine":[6,7,8,9,10],"winning":[1,2,3,4,5]},"seqNo":0,"timestamp":"2026-01-01T00:00:00Z","version":"1.0"}';
+  const expected = '{"closingDate":"2026-01-01T19:45:00Z","drawId":"draw-1","drawName":"Evening draw","eventId":"evt-1","gameSpec":{"distinctAcross":[["winning","machine"]],"draws":[{"count":5,"label":"winning","ordered":false,"pool":{"max":90,"min":1},"withReplacement":false},{"count":5,"label":"machine","ordered":false,"pool":{"max":90,"min":1},"withReplacement":false}],"gameId":"g1"},"generatedAt":"2026-01-01T00:00:00Z","nonce":"nonce123","prevHash":"sha256:abc","result":{"machine":[6,7,8,9,10],"winning":[1,2,3,4,5]},"seqNo":0,"version":"2.0"}';
   assert.equal(canonicalize(record), expected);
 });
 
